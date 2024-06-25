@@ -3,40 +3,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Problema5_VentaEntradasTeatro {
-
-    public static void main(String[] args) {
-        Teatro teatro = new Teatro();
-        teatro.agregarZona(new Zona("Principal", 200, 25, 17.5));
-        teatro.agregarZona(new Zona("PalcoB", 40, 70, 40));
-        teatro.agregarZona(new Zona("Central", 400, 20, 14));
-        teatro.agregarZona(new Zona("Lateral", 100, 15.5, 10));
-
-        Entrada entrada1 = teatro.venderEntrada("Principal", "Juan Perez", "normal");
-        if (entrada1 != null) {
-            System.out.println("Identificador de entrada: " + entrada1.id);
-            System.out.println("Precio: " + entrada1.precio + "$");
-        }
-
-        Entrada consulta = teatro.consultarEntrada(1);
-        if (consulta != null) {
-            System.out.println("Consulta de entrada: ");
-            System.out.println("Nombre del comprador: " + consulta.nombreComprador);
-            System.out.println("Precio: " + consulta.precio + "$");
-            System.out.println("Zona: " + consulta.zona.nombre);
-        } else {
-            System.out.println("No existe ninguna entrada con ese identificador.");
-        }
-
-    }
+    
 }
 
 class Zona {
 
-    public String nombre;
-    public int numeroLocalidades;
-    public double precioNormal;
-    public double precioAbonado;
-    public int localidadesVendidas;
+    private String nombre;
+    private int numeroLocalidades;
+    private double precioNormal;
+    private double precioAbonado;
+    private int localidadesVendidas;
 
     public Zona(String nombre, int numeroLocalidades, double precioNormal, double precioAbonado) {
         this.nombre = nombre;
@@ -44,6 +20,10 @@ class Zona {
         this.precioNormal = precioNormal;
         this.precioAbonado = precioAbonado;
         this.localidadesVendidas = 0;
+    }
+
+    public String getNombre() {
+        return nombre;
     }
 
     public boolean estaCompleta() {
@@ -56,25 +36,25 @@ class Zona {
         }
 
         localidadesVendidas++;
-        return switch (tipo) {
-            case "normal" ->
-                new Normal(id, this, nombreComprador, precioNormal);
-            case "abonado" ->
-                new Abonado(id, this, nombreComprador, precioAbonado);
-            case "reducida" ->
-                new Reducida(id, this, nombreComprador, precioNormal);
-            default ->
-                null;
-        };
+        switch (tipo) {
+            case "normal":
+                return new Normal(id, this, nombreComprador, precioNormal);
+            case "abonado":
+                return new Abonado(id, this, nombreComprador, precioAbonado);
+            case "reducida":
+                return new Reducida(id, this, nombreComprador, precioNormal);
+            default:
+                return null;
+        }
     }
 }
 
 abstract class Entrada {
 
-    public int id;
-    public Zona zona;
-    public String nombreComprador;
-    public double precio;
+    protected int id;
+    protected Zona zona;
+    protected String nombreComprador;
+    protected double precio;
 
     public Entrada(int id, Zona zona, String nombreComprador) {
         this.id = id;
@@ -85,6 +65,21 @@ abstract class Entrada {
 
     public abstract double calcularPrecio();
 
+    public int getId() {
+        return id;
+    }
+
+    public String getNombreComprador() {
+        return nombreComprador;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public Zona getZona() {
+        return zona;
+    }
 }
 
 class Normal extends Entrada {
@@ -151,7 +146,7 @@ class Teatro {
     public Entrada venderEntrada(String nombreZona, String nombreComprador, String tipo) {
         Zona zona = null;
         for (Zona z : zonas) {
-            if (z.nombre.equalsIgnoreCase(nombreZona)) {
+            if (z.getNombre().equalsIgnoreCase(nombreZona)) {
                 zona = z;
                 break;
             }
@@ -163,17 +158,19 @@ class Teatro {
                 entradas.add(entrada);
                 return entrada;
             } else {
+                System.out.println("La zona está completa.");
                 return null;
             }
         } else {
+            System.out.println("No existe ninguna zona con ese nombre.");
             return null;
         }
     }
 
     public Entrada consultarEntrada(int id) {
-        for (Entrada entrada : entradas) {
-            if (entrada.id == id) {
-                return entrada;
+        for (Entrada e : entradas) {
+            if (e.getId() == id) {
+                return e;
             }
         }
         return null;
