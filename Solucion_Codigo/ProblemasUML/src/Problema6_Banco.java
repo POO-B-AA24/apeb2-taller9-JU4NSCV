@@ -16,7 +16,7 @@ public class Problema6_Banco {
         cuenta2.aplicarInteres();
         cuenta3.aplicarInteres();
 
-        // Mostrar balances
+        // Mostrar dineroCuentas
         System.out.println(cuenta1);
         System.out.println(cuenta2);
         System.out.println(cuenta3);
@@ -51,7 +51,7 @@ class Cuenta {
 
     @Override
     public String toString() {
-        return "Cuenta [numeroCuenta=" + numeroCuenta + ", nombreCliente=" + nombreCliente + ", balance=" + balance + "]";
+        return "Cuenta [numeroCuenta=" + numeroCuenta + ", nombreCliente=" + nombreCliente + ", dineroCuenta=" + dineroCuenta + "]";
     }
 }
 
